@@ -1079,8 +1079,8 @@ struct redisServer {
     int cfd_count;              /* Used slots in cfd[] */
     list *clients;              /* List of active clients */
     list *clients_to_close;     /* Clients to close asynchronously */
-    list *clients_pending_write; /* There is to write or install handler. */
-    list *clients_pending_read;  /* Client has pending read socket buffers. */
+    list *clients_pending_write; /* There is to write or install handler. DXJ 待回复*/
+    list *clients_pending_read;  /* Client has pending read socket buffers. DXJ 待读取*/
     list *slaves, *monitors;    /* List of slaves and MONITORs */
     client *current_client;     /* Current client executing the command. */
     rax *clients_timeout_table; /* Radix tree for blocked clients timeouts. */
@@ -1095,7 +1095,7 @@ struct redisServer {
     int gopher_enabled;         /* If true the server will reply to gopher
                                    queries. Will still serve RESP2 queries. */
     int io_threads_num;         /* Number of IO threads to use. */
-    int io_threads_do_reads;    /* Read and parse from IO threads? */
+    int io_threads_do_reads;    /* Read and parse from IO threads? DXJ do we use IO thread to read?*/
     long long events_processed_while_blocked; /* processEventsWhileBlocked() */
 
     /* RDB / AOF loading information */

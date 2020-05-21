@@ -248,7 +248,7 @@ typedef struct RedisModuleBlockedClient {
                            or timeout callback. It is set via the
                            RedisModule_UnblockClient() API. */
     client *reply_client;           /* Fake client used to accumulate replies
-                                       in thread safe contexts. */
+                                       in thread safe contexts. DXJ */
     int dbid;           /* Database number selected by the original client. */
     int blocked_on_keys;    /* If blocked via RM_BlockClientOnKeys(). */
     int unblocked;          /* Already on the moduleUnblocked list. */

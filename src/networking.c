@@ -85,6 +85,7 @@ void linkClient(client *c) {
     raxInsert(server.clients_index,(unsigned char*)&id,sizeof(id),c,NULL);
 }
 
+//DXJ 用客户连接创建client对象
 client *createClient(connection *conn) {
     client *c = zmalloc(sizeof(client));
 
@@ -97,7 +98,7 @@ client *createClient(connection *conn) {
         connEnableTcpNoDelay(conn);
         if (server.tcpkeepalive)
             connKeepAlive(conn,server.tcpkeepalive);
-        connSetReadHandler(conn, readQueryFromClient);
+        connSetReadHandler(conn, readQueryFromClient); //DXJ 设置readQueryFromClient作为读取函数，当有client请求到来，就会调取该函数
         connSetPrivateData(conn, c);
     }
 
@@ -164,7 +165,7 @@ client *createClient(connection *conn) {
     c->auth_module = NULL;
     listSetFreeMethod(c->pubsub_patterns,decrRefCountVoid);
     listSetMatchMethod(c->pubsub_patterns,listMatchObjects);
-    if (conn) linkClient(c);
+    if (conn) linkClient(c); //DXJ 将client加入client链表
     initClientMultiState(c);
     return c;
 }
@@ -920,6 +921,7 @@ static void acceptCommonHandler(connection *conn, int flags, char *ip) {
      * called, because we don't want to even start transport-level negotiation
      * if rejected.
      */
+    //DXJ 客户连接数超过配置，拒绝连接
     if (listLength(server.clients) >= server.maxclients) {
         char *err = "-ERR max number of clients reached\r\n";
 
@@ -968,6 +970,7 @@ static void acceptCommonHandler(connection *conn, int flags, char *ip) {
     }
 }
 
+//DXJ 有 client 连过来就会call
 void acceptTcpHandler(aeEventLoop *el, int fd, void *privdata, int mask) {
     int cport, cfd, max = MAX_ACCEPTS_PER_CALL;
     char cip[NET_IP_STR_LEN];
@@ -975,7 +978,7 @@ void acceptTcpHandler(aeEventLoop *el, int fd, void *privdata, int mask) {
     UNUSED(mask);
     UNUSED(privdata);
 
-    while(max--) {
+    while(max--) { //一次最多尝试接收MAX_ACCEPTS_PER_CALL个连接
         cfd = anetTcpAccept(server.neterr, fd, cip, sizeof(cip), &cport);
         if (cfd == ANET_ERR) {
             if (errno != EWOULDBLOCK)

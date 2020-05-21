@@ -2884,7 +2884,7 @@ void initServer(void) {
      * domain sockets. */
     for (j = 0; j < server.ipfd_count; j++) {
         if (aeCreateFileEvent(server.el, server.ipfd[j], AE_READABLE,
-            acceptTcpHandler,NULL) == AE_ERR)
+            acceptTcpHandler,NULL) == AE_ERR) //DXJ 对所有监听的ip， 注册acceptTcpHandler 作为 accept handler
             {
                 serverPanic(
                     "Unrecoverable error creating server.ipfd file event.");
@@ -4607,7 +4607,7 @@ int linuxOvercommitMemoryValue(void) {
     return atoi(buf);
 }
 
-void linuxMemoryWarnings(void) {
+void  xlinuxMemoryWarnings(void) {
     if (linuxOvercommitMemoryValue() == 0) {
         serverLog(LL_WARNING,"WARNING overcommit_memory is set to 0! Background save may fail under low memory condition. To fix this issue add 'vm.overcommit_memory = 1' to /etc/sysctl.conf and then reboot or run the command 'sysctl vm.overcommit_memory=1' for this to take effect.");
     }
